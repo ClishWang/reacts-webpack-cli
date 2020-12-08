@@ -1,0 +1,18 @@
+var path = require('path');
+module.exports = {
+    type: '<%= type %>',
+    devPath: 'http://127.0.0.1:<%= devServerPort %>/',
+    favicon: './public/favicon.ico',
+    <% if (type === 'node-ssr') { %>
+    nodeServerEntry: {'<%= entryName %>': '<%= entryJsPath %>'}
+    <% } %>
+    webpack: function (config) {
+        config.entry = {'<%= entryName %>': '<%= entryJsPath %>'};
+        return config;
+    },
+    devServer: {
+        hot: true,
+        port: <%= devServerPort %>,
+        publicPath: 'http://127.0.0.1:<%= devServerPort %>',
+    }
+};

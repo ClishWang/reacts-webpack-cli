@@ -1,0 +1,39 @@
+{
+  "name": "reacts-webpack-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "rwc": "bin/script.js"
+  },
+  "author": "Clish Wang",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:ClishWang/reacts-webpack-cli.git"
+  },
+  "dependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-decorators": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "autoprefixer": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "commander": "^6.2.0",
+    "css-loader": "^5.0.1",
+    "ejs": "^3.1.5",
+    "inquirer": "^7.3.3",
+    "mini-css-extract-plugin": "^1.3.2",
+    "node-sass": "^5.0.0",
+    "postcss-loader": "^4.1.0",
+    "progress-bar-webpack-plugin": "^2.1.0",
+    "rimraf": "^3.0.2",
+    "sass-loader": "^10.1.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.10.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-node-externals": "^2.5.2"
+  }
+}
