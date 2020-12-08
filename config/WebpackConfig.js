@@ -28,9 +28,9 @@ const _default = (env = 'development') => {
             use: [{
                 loader: 'babel-loader',
                 options: require('./BabelConfig.js')(),
-                exclude: /node_modules/,
-                sideEffects: false
-            }]
+            }],
+            exclude: /node_modules/,
+            sideEffects: false
         }, {
             test: /\.(sa|sc|c)ss$/,
             use: [
@@ -95,8 +95,8 @@ exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) =>
                 use: {
                     loader: 'babel-loader',
                     options: require('./BabelConfig.js')(),
-                    exclude: /node_modules/
-                }
+                },
+                exclude: /node_modules/
             }, {
                 test: /\.(sa|sc|c)ss$/,
                 use: 'null-loader'
