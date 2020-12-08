@@ -70,7 +70,7 @@ exports.mixedProduction = (config, fullyConfig) => {
 
 };
 
-exports.mixedNodeSSR = ({nodeServerEntry = entry, cdnPath, testPath, devPath}) => {
+exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) => {
     const serverConfig = _default('NodeSSR');
     const env = process.env.NODE_ENV;
 
