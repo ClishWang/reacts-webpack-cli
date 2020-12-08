@@ -57,7 +57,7 @@ const _default = (env = 'development') => {
         extensions: ['.js', '.jsx', '.css', '.scss'],
         modules: [Utils.resolveNodeModulesPath(), 'node_modules']
     }
-    return { entry: {}, mode: env, output, module, plugins, resolve };
+    return { entry: {}, output, module, plugins, resolve };
 };
 // 获取不同环境基础配置
 exports.getDefaultConfig = env => _default(env);
