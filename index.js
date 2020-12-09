@@ -101,7 +101,7 @@ program
                 const {webpackConfig, devServer, favicon} = fullyConfig;
                 const {port, host = '0.0.0.0'}  = devServer;
                 console.log(`DevServer on http://${host}:${port}`);
-                const devServer = new WebpackDevServer(webpack(webpackConfig), {
+                const server = new WebpackDevServer(webpack(webpackConfig), {
                     stats: statsOptions,
                     disableHostCheck: true,
                     headers: { 'Access-Control-Allow-Origin': '*' },
@@ -111,10 +111,10 @@ program
                         app.use(express.static(path.join(__dirname, `.${sep}node_modules${sep}`)));
                         app.use(express.static(path.join(__dirname, `..${sep}..${sep}..${sep}node_modules${sep}`)));
                         app.use(`/${favicon.split('/').pop()}`, express.static(path.join(process.cwd(), favicon)));
-                        devServer.before && devServer.before.before(app, ...args);
+                        devServer.before && devServer.before(app, ...args);
                     }
                 });
-                devServer.listen(port);
+                server.listen(port);
             });
         });
     });
