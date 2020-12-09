@@ -121,7 +121,7 @@ exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, 
             favicon,
         }));
     });
-    config.devTool = sourceMap;
+    config.devtool = sourceMap;
 };
 
 exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPath}) => {
