@@ -62,9 +62,11 @@ const _default = (env = 'development') => {
             test: /\.(png|svg|gif|jpe?g|)$/,
             use: {
                 loader: 'url-loader',
-                limit: 1024,
-                name: '[name].[hash:8].[ext]',
-                outputPath: 'images'
+                options: {
+                    limit: 1024,
+                    name: '[name].[hash:8].[ext]',
+                    outputPath: 'images'
+                }
             }
         }
     ]};
@@ -121,7 +123,7 @@ exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, 
             favicon,
         }));
     });
-    config.devtool = sourceMap;
+    sourceMap && (config.devtool = sourceMap);
 };
 
 exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPath}) => {
