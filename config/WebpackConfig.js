@@ -2,13 +2,28 @@ const path = require('path');
 const webpack = require('webpack');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const Utils = require('../lib/utils');
+
+const formatEntry = (entry, preEntryValue = [], cb) => {
+    Object.keys(entry).forEach(key => {
+        if (Array.isArray(entry[key])) {
+            entry[key].unshift.apply(entry[key], preEntryValue);
+        } else {
+            entry[key] = preEntryValue.concat(entry[key]);
+        }
+        cb && cb(key);
+    });
+};
 // 基础配置
 const _default = (env = 'development') => {
-    const output = path.join(process.cwd(), `.${path.sep}dist${path.sep}`);
+    const mode = env !== 'development' ? 'production' : env;
+    const output = {
+        path: path.join(process.cwd(), `.${path.sep}dist${path.sep}`)
+    };
     const plugins = [
-        new MiniCssExtractPlugin(),
         new webpack.DefinePlugin({ // 定义全局变量
             __IS_SSR__: false,
             __MODE__: `'${env}'`,
@@ -57,29 +72,90 @@ const _default = (env = 'development') => {
         extensions: ['.js', '.jsx', '.css', '.scss'],
         modules: [Utils.resolveNodeModulesPath(), 'node_modules']
     }
-    return { entry: {}, output, module, plugins, resolve };
+    return { entry: {}, mode, output, plugins, module, resolve };
 };
 // 获取不同环境基础配置
 exports.getDefaultConfig = env => _default(env);
 
-exports.mixedDevelopment = (config, devServerConfig, fullyConfig) => {
-
+exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, sourceMap = ''}) => {
+    const nodeModulesPath = Utils.resolveNodeModulesPath();
+    let preEntry = [];
+    process.noDeprecation = true;   // 弃用警告
+    // dev 模式下配置
+    config.output.publicPath = devPath;
+    config.output.filename = '[name].js';
+    config.plugins.push(new MiniCssExtractPlugin({filename: '[name].css'}));
+    // devBuildOnly 替换 entry
+    if (devBuildOnly && Array.isArray(devBuildOnly) && devBuildOnly.length > 0) {
+        config.entry = devBuildOnly.reduce((obj, key) => {
+            obj[key] = config.entry[key];
+            return obj;
+        }, {});
+    }
+    // 热更新模块
+    if (devServer.hot) {
+        let patch = path.join(nodeModulesPath, `react-hot-loader${paths.sep}patch`);
+        let webpackDevServer = `${path.join(nodeModulesPath, `webpack-dev-server${paths.sep}client`)}?http://127.0.0.1:${devServer.port}/`
+        let hotDevServer = path.join(nodeModulesPath, `webpack${paths.sep}hot${paths.sep}dev-server`);
+        preEntry = preEntry.concat(patch, webpackDevServer, hotDevServer);
+        // 热更新module和插件配置
+        config.module.rules.unshift({
+            test: /\.jsx?/,
+            use: require.resolve(`react-hot-loader${path.sep}webpack`),
+            exclude: /node_modules/
+        });
+        config.plugins.push(new webpack.HotModuleReplacementPlugin());
+    }
+    // 添加插件
+    formatEntry(config.entry, preEntry, entry => {
+        config.plugins.push(new HtmlWebpackPlugin({
+            template: path.join(__dirname, `..${path.sep}template${path.sep}js.ejs`),
+            filename: process.cwd() + `${path.sep}dist_ejs${path.sep}${entry}.js.ejs`,
+            chunks: [entry],
+            inject: false,
+        }), new HtmlWebpackPlugin({
+            template: path.join(__dirname, `..${path.sep}template${path.sep}css.ejs`),
+            filename: process.cwd() + `${path.sep}dist_ejs${path.sep}${entry}.css.ejs`,
+            chunks: [entry],
+            inject: false,
+            favicon,
+        }));
+    });
+    config.devTool = sourceMap;
 };
 
-exports.mixedProduction = (config, fullyConfig) => {
-
+exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPath}) => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    config.output.publicPath = isProduction ? cdnPath : testPath;
+    config.output.filename = libs ? '[name].js' : '[name][chunkhash:8].js';
+    config.plugins.unshift(new CleanWebpackPlugin(['dist'], {
+        root: process.cwd(),
+        verbose: true,
+        allowExternal: true
+    }));
+    config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name][chunkhash:8].css'}));
+    const tempPath = useTempPath && isProduction ? 'dist_ejs_temp' : 'dist_ejs';
+    formatEntry(config.entry, [], entry => {
+        if (!!libs) return;
+        config.plugins.push(new HtmlWebpackPlugin({
+            template: path.join(__dirname, `..${path.sep}template${path.sep}js.ejs`),
+            filename: process.cwd() + `${path.sep}${tempPath}${path.sep}${entry}.js.ejs`,
+            chunks: [entry],
+            inject: false
+        }), new HtmlWebpackPlugin({
+            template: path.join(__dirname, `..${path.sep}template${path.sep}css.ejs`),
+            filename: process.cwd() + `${path.sep}${tempPath}${path.sep}${entry}.css.ejs`,
+            chunks: [entry],
+            inject: false,
+            favicon
+        }));
+    });
 };
 
 exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) => {
     const serverConfig = _default('NodeSSR');
     const env = process.env.NODE_ENV;
-
-    Object.keys(entry).forEach(key => {
-        if (!Array.isArray(entry[key])) {
-            entry[key] = [entry[key]];
-        }
-    });
-
+    formatEntry(entry);
     return Object.assign(serverConfig, {
         entry,
         target: 'node',

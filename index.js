@@ -4,6 +4,7 @@ const {program} = require('commander');
 const inquirer = require('inquirer');
 const ejs = require('ejs');
 const rm = require('rimraf');
+const express = require('express');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const pkg = require('./package.json');
@@ -42,6 +43,14 @@ const getFullyConfig = (projectConfigFilePath, env) => {
     config.webpackConfig = config.webpack(WebpackConfig.getDefaultConfig(env));
     return config;
 };
+// webpack启动后回调
+const onLoadCallback = (err, stats) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(stats.toString(statsOptions));
+};
 
 // 初始化生成webpack文件
 program.command('init')
@@ -76,23 +85,57 @@ program.command('init')
         }).catch(err => console.log(err));
     });
 // 开发环境
-
+program
+    .command('dev')
+    .description('启动本地开发服务')
+    .option('-c --config [config]', 'webpack配置文件', './webpack.config.js')
+    .action(cmd => {
+        const fullyConfig = getFullyConfig(cmd.config, 'development');
+        WebpackConfig.mixedDevelopment(fullyConfig.webpackConfig, fullyConfig);
+        removeDirectory(() => {
+            webpack(fullyConfig.webpackConfig, (err, stats) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                const {webpackConfig, devServer, favicon} = fullyConfig;
+                const {port, host = '0.0.0.0'}  = devServer;
+                console.log(`DevServer on http://${host}:${port}`);
+                const devServer = new WebpackDevServer(webpack(webpackConfig), {
+                    stats: statsOptions,
+                    disableHostCheck: true,
+                    headers: { 'Access-Control-Allow-Origin': '*' },
+                    ...fullyConfig.devServer,
+                    before: (app, ...args) => {
+                        const sep = path.sep;
+                        app.use(express.static(path.join(__dirname, `.${sep}node_modules${sep}`)));
+                        app.use(express.static(path.join(__dirname, `..${sep}..${sep}..${sep}node_modules${sep}`)));
+                        app.use(`/${favicon.split('/').pop()}`, express.static(path.join(process.cwd(), favicon)));
+                        devServer.before && devServer.before.before(app, ...args);
+                    }
+                });
+                devServer.listen(port);
+            });
+        });
+    });
 // 正式环境
+program.command('pro')
+    .description('正式环境打包')
+    .option('-c --config [config]', 'webpack配置文件', './webpack.config.js')
+    .action(cmd => {
+        const fullyConfig = getFullyConfig(cmd.config, 'production');
+        WebpackConfig.mixedProduction(fullyConfig.webpackConfig, fullyConfig);
+        webpack(fullyConfig.webpackConfig, onLoadCallback);
+    });
 
 // ssr打包
 program.command('ssr')
     .description('ssr打包入口页面')
     .option('-c --config [config]', 'webpack配置文件', './webpack.config.js')
     .action(cmd => {
-        const webpackConfig = getFullyConfig(cmd.config, 'NodeSSR');
-        const ssrConfig = WebpackConfig.mixedNodeSSR(webpackConfig);
-        webpack(ssrConfig, (err, stats) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            console.log(stats.toString(statsOptions));
-        });
+        const fullyConfig = getFullyConfig(cmd.config, 'NodeSSR');
+        const ssrConfig = WebpackConfig.mixedNodeSSR(fullyConfig);
+        webpack(ssrConfig, onLoadCallback);
     });
 // 文件替换
 program.command('rename')

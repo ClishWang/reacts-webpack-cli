@@ -1,0 +1,3 @@
+<% var type = htmlWebpackPlugin.options.chunks[0] %>
+<link rel="shortcut icon" href="<%= htmlWebpackPlugin.files.favicon %>">
+<link href="<%= htmlWebpackPlugin.files.chunks[type].css[0] %>" rel="stylesheet">
