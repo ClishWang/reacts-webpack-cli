@@ -65,7 +65,7 @@ const _default = (env = 'development') => {
             use: {
                 loader: 'url-loader',
                 options: {
-                    limit: 1024,
+                    limit: 0,
                     name: '[name].[hash:8].[ext]',
                     outputPath: 'images'
                 }
@@ -182,7 +182,14 @@ exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) =>
                 use: 'null-loader'
             }, {
                 test: /\.(png|svg|gif|jpe?g|)$/,
-                use: 'url-loader'
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 0,
+                        name: '[name].[hash:8].[ext]',
+                        emitFile: false
+                    }
+                }
             }
         ] },
         plugins: [
