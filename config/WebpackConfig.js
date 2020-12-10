@@ -67,7 +67,8 @@ const _default = (env = 'development') => {
                 options: {
                     limit: 0,
                     name: '[name].[hash:8].[ext]',
-                    outputPath: 'images'
+                    outputPath: 'images',
+                    emitFile: true
                 }
             }
         }
@@ -187,6 +188,7 @@ exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) =>
                     options: {
                         limit: 0,
                         name: '[name].[hash:8].[ext]',
+                        outputPath: 'images',
                         emitFile: false
                     }
                 }
