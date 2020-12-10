@@ -53,7 +53,9 @@ const _default = (env = 'development') => {
                 'css-loader',
                 {
                     loader: 'postcss-loader',
-                    options: { plugins: [ require('autoprefixer') ] }
+                    options: {
+                        postcssOptions: { plugins: ['autoprefixer'] }
+                    }
                 },
                 'sass-loader'
             ],
