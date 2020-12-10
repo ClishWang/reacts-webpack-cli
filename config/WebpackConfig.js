@@ -98,9 +98,9 @@ exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, 
     }
     // 热更新模块
     if (devServer.hot) {
-        let patch = path.join(nodeModulesPath, `react-hot-loader${paths.sep}patch`);
-        let webpackDevServer = `${path.join(nodeModulesPath, `webpack-dev-server${paths.sep}client`)}?http://127.0.0.1:${devServer.port}/`
-        let hotDevServer = path.join(nodeModulesPath, `webpack${paths.sep}hot${paths.sep}dev-server`);
+        let patch = path.join(nodeModulesPath, `react-hot-loader${path.sep}patch`);
+        let webpackDevServer = `${path.join(nodeModulesPath, `webpack-dev-server${path.sep}client`)}?http://127.0.0.1:${devServer.port}/`
+        let hotDevServer = path.join(nodeModulesPath, `webpack${path.sep}hot${path.sep}dev-server`);
         preEntry = preEntry.concat(patch, webpackDevServer, hotDevServer);
         // 热更新module和插件配置
         config.module.rules.unshift({
