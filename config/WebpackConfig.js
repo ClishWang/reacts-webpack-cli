@@ -76,8 +76,24 @@ const _default = (env = 'development') => {
     const resolve = {
         extensions: ['.js', '.jsx', '.css', '.scss'],
         modules: [Utils.resolveNodeModulesPath(), 'node_modules']
-    }
-    return { entry: {}, mode, output, plugins, module, resolve };
+    };
+    const externals = {
+        'react': {
+            amd: 'react',
+            commonjs: 'react',
+            commonjs2: 'react',
+            root: 'React',
+            var: 'React'
+        },
+        'react-dom': {
+            amd: 'react-dom',
+            commonjs: 'react-dom',
+            commonjs2: 'react-dom',
+            root: 'ReactDOM',
+            var: 'ReactDOM'
+        }
+    };
+    return { entry: {}, mode, output, plugins, module, resolve, externals };
 };
 // 获取不同环境基础配置
 exports.getDefaultConfig = env => _default(env);
