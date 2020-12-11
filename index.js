@@ -22,13 +22,15 @@ const statsOptions = {
 program.version(pkg.version);
 // 删除dist目录文件
 const removeDirectory = (callback) => {
-    const distPath = path.join(process.cwd(), './dist/*');
-    rm(distPath, err => {
-        console.log(`删除${distPath}失败, 请确认后重试`);
-        return;
+    rm(path.join(process.cwd(), './dist/*'), err => {
+        const distPath = path.join(process.cwd(), './dist');
+        if (err) {
+            console.log(`删除${distPath}失败, 请确认后重试`);
+            return;
+        }
+        console.log(`删除${distPath}成功`);
+        callback && callback();
     });
-    console.log(`删除${distPath}成功`);
-    callback && callback();
 };
 // 混合webpack配置
 const getFullyConfig = (projectConfigFilePath, env) => {
@@ -105,7 +107,10 @@ program
                     stats: statsOptions,
                     disableHostCheck: true,
                     headers: { 'Access-Control-Allow-Origin': '*' },
-                    ...fullyConfig.devServer,
+                    watchOptions: {
+                        aggregateTimeout: 1000
+                    },
+                    ...devServer,
                     before: (app, ...args) => {
                         const sep = path.sep;
                         app.use(express.static(path.join(__dirname, `.${sep}node_modules${sep}`)));
