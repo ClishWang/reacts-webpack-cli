@@ -149,10 +149,10 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
     const isProduction = process.env.NODE_ENV === 'production';
     config.output.publicPath = isProduction ? cdnPath : testPath;
     config.output.filename = libs ? '[name].js' : '[name][chunkhash:8].js';
-    config.plugins.unshift(new CleanWebpackPlugin(['dist'], {
-        root: process.cwd(),
+    config.plugins.unshift(new CleanWebpackPlugin({
         verbose: true,
-        allowExternal: true
+        cleanOnceBeforeBuildPatterns: ["**/*", './dist'],
+        dangerouslyAllowCleanPatternsOutsideProject: true
     }));
     config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name][chunkhash:8].css'}));
     const tempPath = useTempPath && isProduction ? 'dist_ejs_temp' : 'dist_ejs';
