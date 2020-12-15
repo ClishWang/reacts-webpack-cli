@@ -150,8 +150,9 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
     config.output.publicPath = isProduction ? cdnPath : testPath;
     config.output.filename = libs ? '[name].js' : '[name][chunkhash:8].js';
     config.plugins.unshift(new CleanWebpackPlugin({
+        dry: false,
         verbose: true,
-        // cleanOnceBeforeBuildPatterns: ["**/*", './dist'],
+        cleanOnceBeforeBuildPatterns: ["**/*", './dist'],
         dangerouslyAllowCleanPatternsOutsideProject: true
     }));
     config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name][chunkhash:8].css'}));
