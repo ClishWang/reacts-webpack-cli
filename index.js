@@ -124,7 +124,7 @@ program
         });
     });
 // 正式环境
-program.command('pro')
+program.command('build')
     .description('正式环境打包')
     .option('-c --config [config]', 'webpack配置文件', './webpack.config.js')
     .action(cmd => {
