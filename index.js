@@ -165,13 +165,4 @@ program.command('rename')
         });
     });
 
-program
-    .command('test')
-    .description('测试commander')
-    .option('-i, --info [info]', '测试信息输出', 'This is test info')
-    .action(cmd => {
-        console.log(cmd.info);
-    });
-
-
 program.parse(process.argv);
