@@ -1,4 +1,6 @@
-# React项目构建Webpack脚手架
+# Reacts-webpack-cli
+
+React项目构建Webpack脚手架
 
 #### 安装
 ```
