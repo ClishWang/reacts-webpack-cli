@@ -174,12 +174,13 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
     });
 };
 
-exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath}) => {
+exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath, webpackConfig: {resolve}}) => {
     const serverConfig = _default('NodeSSR');
     const env = process.env.NODE_ENV;
     formatEntry(entry);
     return Object.assign(serverConfig, {
         entry,
+        resolve,
         target: 'node',
         output: {
             path: path.join(process.cwd(), `.${path.sep}dist_server${path.sep}`),
