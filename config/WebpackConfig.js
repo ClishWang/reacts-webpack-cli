@@ -148,7 +148,7 @@ exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, 
 exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPath}) => {
     const isProduction = process.env.NODE_ENV === 'production';
     config.output.publicPath = isProduction ? cdnPath : testPath;
-    config.output.filename = libs ? '[name].js' : '[name][chunkhash:8].js';
+    config.output.filename = libs ? '[name].js' : '[name].[chunkhash:8].js';
     config.plugins.unshift(new CleanWebpackPlugin({
         dry: false,
         verbose: true,
