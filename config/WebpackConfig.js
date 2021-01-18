@@ -17,7 +17,7 @@ const formatEntry = (entry, preEntryValue = [], cb) => {
         cb && cb(key);
     });
 };
-cost getDevEntry = (entries, devEntry) => {
+const getDevEntry = (entries, devEntry) => {
     if (devEntry && Array.isArray(devEntry) && devEntry.length > 0) {
         return devEntry.reduce((obj, key) => {
             obj[key] = entries[key];
