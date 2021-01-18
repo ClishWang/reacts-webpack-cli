@@ -17,6 +17,15 @@ const formatEntry = (entry, preEntryValue = [], cb) => {
         cb && cb(key);
     });
 };
+cost getDevEntry = (entries, devEntry) => {
+    if (devEntry && Array.isArray(devEntry) && devEntry.length > 0) {
+        return devEntry.reduce((obj, key) => {
+            obj[key] = entries[key];
+            return obj;
+        }, {});
+    }
+    return entries;
+}
 // 基础配置
 const _default = (env = 'development') => {
     const mode = env !== 'development' ? 'production' : env;
@@ -107,12 +116,7 @@ exports.mixedDevelopment = (config, {devPath, devServer, devBuildOnly, favicon, 
     config.output.filename = '[name].js';
     config.plugins.push(new MiniCssExtractPlugin({filename: '[name].css'}));
     // devBuildOnly 替换 entry
-    if (devBuildOnly && Array.isArray(devBuildOnly) && devBuildOnly.length > 0) {
-        config.entry = devBuildOnly.reduce((obj, key) => {
-            obj[key] = config.entry[key];
-            return obj;
-        }, {});
-    }
+    config.entry = getDevEntry(config.entry, devBuildOnly);
     // 热更新模块
     if (devServer.hot) {
         let patch = path.join(nodeModulesPath, `react-hot-loader${path.sep}patch`);
@@ -174,9 +178,10 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
     });
 };
 
-exports.mixedNodeSSR = ({nodeServerEntry: entry, cdnPath, testPath, devPath, webpackConfig: {resolve}}) => {
+exports.mixedNodeSSR = ({nodeServerEntry, devBuildOnly, cdnPath, testPath, devPath, webpackConfig: {resolve}}) => {
     const serverConfig = _default('NodeSSR');
     const env = process.env.NODE_ENV;
+    const entry = getDevEntry(nodeServerEntry, devBuildOnly);
     formatEntry(entry);
     return Object.assign(serverConfig, {
         entry,
