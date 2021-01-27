@@ -56,6 +56,11 @@ const _default = (env = 'development') => {
             exclude: /node_modules/,
             sideEffects: false
         }, {
+            test: /\.tsx?$/,
+            loader: 'ts-loader',
+            exclude: /node_modules/,
+            sideEffects: false
+        }, {
             test: /\.(sa|sc|c)ss$/,
             use: [
                 MiniCssExtractPlugin.loader,
@@ -83,7 +88,7 @@ const _default = (env = 'development') => {
         }
     ]};
     const resolve = {
-        extensions: ['.js', '.jsx', '.css', '.scss'],
+        extensions: ['.ts', '.tsx', 'js', 'jsx', '.css', '.scss'],
         modules: [Utils.resolveNodeModulesPath(), 'node_modules']
     };
     const externals = {
@@ -201,6 +206,11 @@ exports.mixedNodeSSR = ({nodeServerEntry, devBuildOnly, cdnPath, testPath, devPa
                     options: require('./BabelConfig.js')(),
                 },
                 exclude: /node_modules/
+            }, {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                sideEffects: false
             }, {
                 test: /\.(sa|sc|c)ss$/,
                 use: 'null-loader'
