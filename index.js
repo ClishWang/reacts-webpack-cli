@@ -125,7 +125,7 @@ program
     });
 // 正式环境
 program.command('build')
-    .description('正式环境打包')
+    .description('资源文件打包')
     .option('-c --config [config]', 'webpack配置文件', './webpack.config.js')
     .action(cmd => {
         const fullyConfig = getFullyConfig(cmd.config, 'production');
