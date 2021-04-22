@@ -164,7 +164,7 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
         cleanOnceBeforeBuildPatterns: ["**/*", './dist'],
         dangerouslyAllowCleanPatternsOutsideProject: true
     }));
-    config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name][chunkhash:8].css'}));
+    config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name].[chunkhash:8].css'}));
     const tempPath = useTempPath && isProduction ? 'dist_ejs_temp' : 'dist_ejs';
     formatEntry(config.entry, [], entry => {
         if (!!libs) return;
