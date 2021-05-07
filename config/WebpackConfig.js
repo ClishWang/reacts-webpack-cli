@@ -68,7 +68,7 @@ const _default = (env = 'development') => {
                 {
                     loader: 'postcss-loader',
                     options: {
-                        postcssOptions: { plugins: ['autoprefixer'] }
+                        postcssOptions: { plugins: ['tailwindcss','autoprefixer'] }
                     }
                 },
                 'sass-loader'
