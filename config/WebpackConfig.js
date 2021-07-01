@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const Utils = require('../lib/utils');
-const tsLoader = require('ts-loader');
 
 const formatEntry = (entry, preEntryValue = [], cb) => {
     Object.keys(entry).forEach(key => {
@@ -58,7 +57,7 @@ const _default = (env = 'development') => {
             sideEffects: false
         }, {
             test: /\.tsx?$/,
-            loader: tsLoader,
+            loader: 'ts-loader',
             exclude: /node_modules/,
             sideEffects: false
         }, {
