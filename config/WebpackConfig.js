@@ -75,7 +75,7 @@ const _default = (env = 'development') => {
             ],
             sideEffects: true,
         }, {
-            test: /\.(png|svg|gif|jpe?g|)$/,
+            test: /\.(png|svg|gif|jpe?g|webp)$/,
             use: {
                 loader: 'url-loader',
                 options: {
@@ -215,7 +215,7 @@ exports.mixedNodeSSR = ({nodeServerEntry, devBuildOnly, cdnPath, testPath, devPa
                 test: /\.(sa|sc|c)ss$/,
                 use: 'null-loader'
             }, {
-                test: /\.(png|svg|gif|jpe?g|)$/,
+                test: /\.(png|svg|gif|jpe?g|webp)$/,
                 use: {
                     loader: 'url-loader',
                     options: {
