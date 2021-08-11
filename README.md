@@ -1,6 +1,6 @@
 # Reacts-webpack-cli
 
-React项目构建Webpack脚手架
+React项目构建Webpack脚手架, 全面升级Webpack5支持。
 
 #### 安装
 ```
