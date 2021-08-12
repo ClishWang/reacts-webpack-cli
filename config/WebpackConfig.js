@@ -32,11 +32,13 @@ const _default = (env = 'development') => {
     const output = {
         path: path.join(process.cwd(), `.${path.sep}dist${path.sep}`)
     };
+    // 持久化缓存
+    const cache = { type: 'filesystem' };
     const plugins = [
         new webpack.DefinePlugin({ // 定义全局变量
             __IS_SSR__: false,
             __MODE__: `'${env}'`,
-            'process.env.NODE_ENV': `'${env}'`,
+            'process.env.NODE_ENV': JSON.stringify(env),
         }),
         new webpack.optimize.AggressiveMergingPlugin(), // 合并chunks
         new ProgressBarPlugin(), // 打包进度显示
@@ -102,7 +104,7 @@ const _default = (env = 'development') => {
             var: 'ReactDOM'
         }
     };
-    return { entry: {}, mode, output, plugins, module, resolve, externals };
+    return { entry: {}, mode, output, cache, plugins, module, resolve, externals };
 };
 // 获取不同环境基础配置
 exports.getDefaultConfig = env => _default(env);
@@ -213,7 +215,8 @@ exports.mixedNodeSSR = ({nodeServerEntry, devBuildOnly, cdnPath, testPath, devPa
                 test: /\.(png|svg|gif|jpe?g|webp)$/,
                 type:'asset/resource',
                 generator: {
-                    filename: 'images/[name].[hash:8][ext][query]'
+                    filename: 'images/[name].[hash:8][ext][query]',
+                    emit: false
                 }
             }
         ] },
