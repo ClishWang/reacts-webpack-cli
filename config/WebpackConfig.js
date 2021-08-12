@@ -76,14 +76,9 @@ const _default = (env = 'development') => {
             sideEffects: true,
         }, {
             test: /\.(png|svg|gif|jpe?g|webp)$/,
-            use: {
-                loader: 'url-loader',
-                options: {
-                    limit: 0,
-                    name: '[name].[hash:8].[ext]',
-                    outputPath: 'images',
-                    emitFile: true
-                }
+            type:'asset/resource',
+            generator: {
+                filename: 'images/[name].[hash:8][ext][query]'
             }
         }
     ]};
@@ -216,14 +211,9 @@ exports.mixedNodeSSR = ({nodeServerEntry, devBuildOnly, cdnPath, testPath, devPa
                 use: 'null-loader'
             }, {
                 test: /\.(png|svg|gif|jpe?g|webp)$/,
-                use: {
-                    loader: 'url-loader',
-                    options: {
-                        limit: 0,
-                        name: '[name].[hash:8].[ext]',
-                        outputPath: 'images',
-                        emitFile: false
-                    }
+                type:'asset/resource',
+                generator: {
+                    filename: 'images/[name].[hash:8][ext][query]'
                 }
             }
         ] },
