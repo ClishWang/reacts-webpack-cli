@@ -33,7 +33,7 @@ const _default = (env = 'development') => {
         path: path.join(process.cwd(), `.${path.sep}dist${path.sep}`)
     };
     // 持久化缓存
-    const cache = { type: 'filesystem' };
+    const cache = { type: 'filesystem', buildDependencies: {config: [__filename]} };
     const plugins = [
         new webpack.DefinePlugin({ // 定义全局变量
             __IS_SSR__: false,
