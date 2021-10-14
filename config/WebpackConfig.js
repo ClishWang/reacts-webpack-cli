@@ -163,6 +163,11 @@ exports.mixedProduction = (config, {libs, useTempPath, favicon, testPath, cdnPat
     }));
     config.plugins.push(new MiniCssExtractPlugin({filename: libs ? '[name].css' : '[name].[chunkhash:8].css'}));
     const tempPath = useTempPath && isProduction ? 'dist_ejs_temp' : 'dist_ejs';
+    // 禁用注释剥离
+    config.optimization = {
+        minimize: true,
+        minimizer: [new TerserPlugin({extractComments: false})]
+    }
     formatEntry(config.entry, [], entry => {
         if (!!libs) return;
         config.plugins.push(new HtmlWebpackPlugin({
